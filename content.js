@@ -14,6 +14,7 @@ const AD_SELECTOR = '[data-testid="countdown"]';
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let adActive = false;
+let lastSpeed = CONFIG.normalSpeed;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function getVideo() {
@@ -60,15 +61,15 @@ function showToast(speed) {
 // ── Poll loop ─────────────────────────────────────────────────────────────────
 setInterval(() => {
   const nowAd = !!document.querySelector(AD_SELECTOR);
-
   if (nowAd && !adActive) {
+    savedSpeed = getVideo()?.playbackRate || CONFIG.normalSpeed;
     adActive = true;
     console.log('[PeacockAdSpeedup] Ad started');
     setSpeed(CONFIG.adSpeed);
   } else if (!nowAd && adActive) {
     adActive = false;
     console.log('[PeacockAdSpeedup] Ad ended');
-    setSpeed(CONFIG.normalSpeed);
+    setSpeed(savedSpeed || CONFIG.normalSpeed);
   }
 
   // Re-apply each tick while ad is active in case the player resets the rate
